@@ -1,5 +1,5 @@
-<?php include('../../../FUNCTIONS/CORE/print_pre.php');
-namespace Jas_n;
+<?php namespace Jas_n;
+include('../../../FUNCTIONS/CORE/print_pre.php'); # For debugging purposes
 class css_processor{
 	/**
 		Combined defaults and constructor variables

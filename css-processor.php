@@ -70,7 +70,9 @@ class css_processor{
 				break;
 		}
 		$this->messages['success'][]='Using browser set '.$browsers;
-		// processing
+		/*
+			- Get caniusedata if current data is over a day old
+		*/
 		# Minify
 		if($this->args['minify']){
 			$css=$this->minify($css);
@@ -97,16 +99,15 @@ class css_processor{
 		Minify compiled css
 	*/
 	private function minify($css){
-		# Strips Comments
-		$css = preg_replace('!/\*.*?\*/!s','', $css);
-		$css = preg_replace('/\n\s*\n/',"\n", $css);
-		# Minifies
-		$css = preg_replace('/[\n\r \t]/',' ', $css);
-		$css = preg_replace('/ +/',' ', $css);
-		$css = preg_replace('/ ?([,:;{}]) ?/','$1',$css);
-		# Kill Trailing Semicolon
-		$css = preg_replace('/;}/','}',$css);
-		# Return Minified CSS
+		# Strip comments
+		$css=preg_replace('!/\*.*?\*/!s','', $css);
+		$css=preg_replace('/\n\s*\n/',"\n", $css);
+		# Minify
+		$css=preg_replace('/[\n\r \t]/',' ', $css);
+		$css=preg_replace('/ +/',' ', $css);
+		$css=preg_replace('/ ?([,:;{}]) ?/','$1',$css);
+		# Remove trailing semicolon
+		$css=preg_replace('/;}/','}',$css);
 		return $css;
 	}
 }

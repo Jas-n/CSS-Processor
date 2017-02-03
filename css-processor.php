@@ -71,7 +71,7 @@ class css_processor{
 		}
 		$this->messages['success'][]='Using browser set '.$browsers;
 		/*
-			- Get caniusedata if current data is over a day old
+			- Get caniuse.com data if current data is over a day old
 		*/
 		# Minify
 		if($this->args['minify']){

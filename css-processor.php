@@ -1,4 +1,5 @@
-<?php namespace Jas_n;
+<?php include('../../../FUNCTIONS/CORE/print_pre.php');
+namespace Jas_n;
 class css_processor{
 	/**
 		Combined defaults and constructor variables
@@ -8,18 +9,33 @@ class css_processor{
 		Default file processing
 	*/
 	private $defaults=array(
-		'minify'=>true	# Minify the CSS
+		'minify'	=>true,			# Minify the CSS
+		'output'	=>'download',	# What to do when processing is complete
+		'output_dir'=>'',			# The destination to save the processed CSS
 	);
 	/**
-		List of files to process
+		List of files/data to process
 	*/
-	private $files;
-	public function __construct($args=NULL){
+	private $files=array();
+	/**
+		List of messages
+	*/
+	private $messages=array(
+		'errors' =>array(),
+		'success'=>array()
+	);
+	public function __construct($options=NULL){
 		if(is_array($args)){
 			$this->args=array_merge($this->defaults,$args);
 		}else{
 			$this->args=$this->defaults;
 		}
+		print_pre($this->args);
+	}
+	/**
+		Add CSS text to process
+	*/
+	public function add_text($text){
 	}
 	/**
 		Add a file to process
@@ -31,15 +47,49 @@ class css_processor{
 		- Whether the file type is css*/
 	}
 	/**
+		Get messages captured during processing
+	*/
+	public function get_messages(){
+		print_pre($this->messages);
+	}
+	/**
 		Process the files
+		- This method handles the return messages
 	*/
 	public function process($browsers){
+		# Check whether files/text has been added
+		if(sizeof($this->files)===0){
+			$this->messages['errors'][]='No files/CSS has been added.';
+			return false;
+		}
+		# Process which browsers to add prefixes for
 		switch($browsers){
 			case 'bootstrap-3':
 				break;
 			case 'bootstrap-4':
 				break;
+		}
+		$this->messages['success'][]='Using browser set '.$browsers;
+		// processing
+		# Minify
+		if($this->args['minify']){
+			$css=$this->minify($css);
+		}
+		# Output
+		switch($this->args['output']){
+			case 'dir':
+				if(!$this->args['output_dir']){
+					$this->messages['errors'][]='Output directory is not defined.';
+					return false;
+				}
+				break;
+			case 'download':
+				break;
+			case 'text':
+				break;
 			default:
+				$this->messages['errors'][]='Output is incorrectly defined.';
+				return false;
 				break;
 		}
 	}
@@ -47,6 +97,16 @@ class css_processor{
 		Minify compiled css
 	*/
 	private function minify($css){
-		
+		# Strips Comments
+		$css = preg_replace('!/\*.*?\*/!s','', $css);
+		$css = preg_replace('/\n\s*\n/',"\n", $css);
+		# Minifies
+		$css = preg_replace('/[\n\r \t]/',' ', $css);
+		$css = preg_replace('/ +/',' ', $css);
+		$css = preg_replace('/ ?([,:;{}]) ?/','$1',$css);
+		# Kill Trailing Semicolon
+		$css = preg_replace('/;}/','}',$css);
+		# Return Minified CSS
+		return $css;
 	}
 }

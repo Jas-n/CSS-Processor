@@ -1,6 +1,6 @@
 <?php include('../css-processor.php');
-$args=array(
+$options=array(
 	'minify'=>false,
 	'not_used'=>1
 );
-$processor=new Jas_n\css_processor($args);
+$processor=new Jas_n\css_processor($options);
